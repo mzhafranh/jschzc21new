@@ -11,7 +11,7 @@ const sqlite3 = require('sqlite3');
 //   }
 // })
 
-const { Pool } = require("pg");
+const { Pool } = require('pg');
 const db = new Pool({
   user: "postgres",
   host: "localhost",
@@ -22,6 +22,7 @@ const db = new Pool({
 
 var indexRouter = require('./routes/index')(db);
 var usersRouter = require('./routes/users');
+var todosRouter = require('./routes/todos')(db);
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/todos', todosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
