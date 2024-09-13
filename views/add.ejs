@@ -4,6 +4,7 @@
 <head>
     <title>BREAD (Browse, Read, Edit, Add, Delete)</title>
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -17,61 +18,17 @@
                 <form action="" method="post" style="padding: 16px 16px 0px 16px;">
                     <div class="row mb-2">
                         <div class="col-2">
-                            <label for="name" class="col-form-label">Name</label>
+                            <label for="title" class="col-form-label">Title</label>
                         </div>
                         <div class="col-10">
-                            <input type="text" name="name" class="form-control" placeholder="insert your name">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-2">
-                            <label for="height" class="col-form-label">Height</label>
-                        </div>
-                        <div class="col-10">
-                            <input type="number" name="height" class="form-control" placeholder="insert your height">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-2">
-                            <label for="weight" class="col-form-label">Weight</label>
-                        </div>
-                        <div class="col-10">
-                            <input type="number" name="weight" class="form-control" placeholder="insert your weight">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-2">
-                            <label for="birthdate">Date</label>
-                        </div>
-                        <div class="col-10">
-                            <input type="date" class="form-control" name="birthdate">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-2">
-                            <label for="married">Is Married</label>
-                        </div>
-                        <div class="col-10">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="married" id="marriedNo" value="0" checked>
-                                <label class="form-check-label" for="married">Not Yet</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="married" id="marriedYes" value="1">
-                                <label class="form-check-label" for="married">Yes</label>
-                            </div>
+                            <input type="text" name="title" class="form-control" placeholder="insert your title">
                         </div>
                     </div>
             </div>
             <div class="card-footer">
                 <div class="row">
-                    <input type="submit" class="btn btn-primary btn-sm" style="width: 90px; margin-right: 5px; margin-left: 10px;"
-                        value="Save"></input>
-                    <a href="/" class="btn btn-warning btn-sm" style="width: 90px;">Back</a>
+                    <button type="submit" class="btn btn-primary btn-sm" style="width: 36px; margin-right: 5px; margin-left: 10px;"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <a href="/" class="btn btn-warning btn-sm" style="width: 36px;"><i class="fa-solid fa-rotate-left"></i></a>
                 </div>
             </div>
             </form>
