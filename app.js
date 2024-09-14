@@ -3,13 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const sqlite3 = require('sqlite3');
+var session = require('express-session')
+var flash = require('connect-flash');
+var fileUpload = require("express-fileupload");
 
-// const db = new sqlite3.Database("database.db", sqlite3.OPEN_READWRITE, err => {
-//   if (err) {
-//       console.error(err);
-//   }
-// })
 
 const { Pool } = require('pg');
 const db = new Pool({
@@ -35,6 +32,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+  secret: 'zhafran',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash());
+app.use(fileUpload({
+  createParentPath: true,
+}) );
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

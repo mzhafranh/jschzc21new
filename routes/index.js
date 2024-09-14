@@ -1,6 +1,10 @@
 var express = require('express');
 const { route } = require('./users');
 var router = express.Router();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const helpers = require('../helpers/util')
+var path = require('path');
 
 module.exports = function (db) {
 
@@ -15,14 +19,63 @@ module.exports = function (db) {
 
 
   router.get('/', function (req, res, next) {
-    res.render('index');
+    res.render('index', { info: req.flash('info') })
+  });
+
+  router.post('/', function (req, res, next) {
+    const { email, password } = req.body
+    console.log('sampai sini')
+        db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
+          console.log(data)
+            if (err) return res.send(err)
+            if (data.rows.length == 0) {
+                req.flash('info', 'Email Not Registered')
+                return res.redirect('/');
+            }
+            bcrypt.compare(password, data.rows[0].password, function (err, result) {
+                if (err) return res.send(err)
+                if (!result) {
+                    req.flash('info', 'Password Incorrect')
+                    return res.redirect('/');
+                } else {
+                  console.log(data.rows[0])
+                  req.session.user = data.rows[0]
+                  res.redirect('/test')
+                }
+            });
+        })
+
   });
 
   router.get('/register', function (req, res, next) {
     res.render('register');
   });
 
-  router.get('/test', async function (req, res, next) {
+  router.post('/register', function (req, res, next) {
+    const { email, password, repassword } = req.body
+    if (password != repassword) {
+      return res.send("Password dan repassword berbeda")
+    }
+    db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
+      if (err) return res.send(err)
+      if (data.rows.length > 0) return res.send("Email sudah terdaftar")
+      bcrypt.hash(password, saltRounds, function (err, hash) {
+        if (err) return res.send(err)
+        db.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hash], (err) => {
+          if (err) return res.send(err)
+        })
+        res.redirect('/')
+      });
+    })
+  });
+
+  router.get('/logout', helpers.isLoggedIn, function (req, res, next) {
+    req.session.destroy((err) => {
+        res.redirect('/')
+    })
+})
+
+  router.get('/test', helpers.isLoggedIn, async function (req, res, next) {
 
     const page = 1
     const pages = 1
@@ -44,9 +97,9 @@ module.exports = function (db) {
     }
 
     const filterPage = `&page=1&title=Wululu&complete=1&startDate=2000-01-01&endDate=2020-01-01&operation=OR`
-  
+
     let sql = 'SELECT * FROM todos';
-  
+
     db.query(sql, (err, data) => {
       if (err) {
         console.error(err);

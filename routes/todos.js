@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const helpers = require('../helpers/util')
 
 // module.exports = router;
 module.exports = function (db) {
@@ -136,7 +137,7 @@ module.exports = function (db) {
 
   });
 
-  router.get('/add', (req, res) => {
+  router.get('/add', helpers.isLoggedIn, (req, res) => {
     res.render('add')
   })
 
@@ -149,7 +150,7 @@ module.exports = function (db) {
     res.redirect('/');
   })
 
-  router.get('/edit/:id', (req, res) => {
+  router.get('/edit/:id', helpers.isLoggedIn, (req, res) => {
     select(parseInt(req.params.id), (err, data) => {
       if (err) {
         console.error(err);
@@ -168,7 +169,7 @@ module.exports = function (db) {
     })
   })
 
-  router.get('/delete/:id', (req, res) => {
+  router.get('/delete/:id', helpers.isLoggedIn, (req, res) => {
     const index = parseInt(req.params.id)
     remove(index, (err) => {
         if (err) {
