@@ -19,7 +19,7 @@ module.exports = function (db) {
 
 
   router.get('/', function (req, res, next) {
-    res.render('index', { info: req.flash('info') })
+    res.render('index', { info: req.flash('info'), success: req.flash('success')})
   });
 
   router.post('/', function (req, res, next) {
@@ -64,6 +64,7 @@ module.exports = function (db) {
         db.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hash], (err) => {
           if (err) return res.send(err)
         })
+        req.flash('success', 'successfully registered, please sign in!')
         res.redirect('/')
       });
     })

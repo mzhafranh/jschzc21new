@@ -6,11 +6,8 @@ const helpers = require('../helpers/util')
 module.exports = function (db) {
 
   function add(title, userid, callback) {
-    const deadline = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-    console.log(deadline);
-
-    db.query('INSERT INTO todos (title, complete, deadline, userid) VALUES ($1, $2, $3, $4)', [title, false, deadline, userid], (err) => {
+    db.query('INSERT INTO todos (title, userid) VALUES ($1, $2)', [title, userid], (err) => {
       callback(err);
     });
   }
