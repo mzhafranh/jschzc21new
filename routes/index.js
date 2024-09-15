@@ -24,9 +24,9 @@ module.exports = function (db) {
 
   router.post('/', function (req, res, next) {
     const { email, password } = req.body
-    console.log('sampai sini')
+    // console.log('sampai sini')
         db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
-          console.log(data)
+          // console.log(data)
             if (err) return res.send(err)
             if (data.rows.length == 0) {
                 req.flash('info', 'Email Not Registered')
@@ -38,9 +38,9 @@ module.exports = function (db) {
                     req.flash('info', 'Password Incorrect')
                     return res.redirect('/');
                 } else {
-                  console.log(data.rows[0])
+                  // console.log(data.rows[0])
                   req.session.user = data.rows[0]
-                  res.redirect('/test')
+                  res.redirect('/todos')
                 }
             });
         })

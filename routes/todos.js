@@ -5,8 +5,12 @@ const helpers = require('../helpers/util')
 // module.exports = router;
 module.exports = function (db) {
 
-  function add(title, complete, deadline, userid, callback) {
-    db.query('INSERT INTO todos (title_column, complete_column, deadline_column, userid_column) VALUES ($1, $2, $3, $4)', [title, complete, deadline, userid], (err) => {
+  function add(title, userid, callback) {
+    const deadline = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+    console.log(deadline);
+
+    db.query('INSERT INTO todos (title, complete, deadline, userid) VALUES ($1, $2, $3, $4)', [title, false, deadline, userid], (err) => {
       callback(err);
     });
   }
@@ -31,7 +35,7 @@ module.exports = function (db) {
   }
 
   /* GET home page. */
-  router.get('/', async function (req, res, next) {
+  router.get('/', helpers.isLoggedIn, async function (req, res, next) {
     const page = req.query.page || 1;
     const limit = 5;
     const offset = (page - 1) * limit;
@@ -88,7 +92,7 @@ module.exports = function (db) {
       filterPageArray.push(`&operation=OR`)
     }
 
-    let sql = 'SELECT COUNT(*) AS total FROM data';
+    let sql = 'SELECT COUNT(*) AS total FROM todos';
     if (wheres.length > 0) {
       if (req.query.operation == 'OR'){
         sql += ` WHERE ${wheres.join(' OR ')}`
@@ -101,39 +105,43 @@ module.exports = function (db) {
     // console.log(values)
     // console.log(wheres)
 
-    // db.query(sql, values, (err, data) => {
-    //     if (err) {
-    //         console.error(err);
-    //     }
-    //     // console.log(data)
-    //     const pages = Math.ceil(data[0].total / limit)
-    //     sql = 'SELECT * FROM data'
-    //     if (wheres.length > 0) {
-    //       if (req.query.operation == 'OR'){
-    //         sql += ` WHERE ${wheres.join(' OR ')}`
-    //       } else if (req.query.operation == 'AND'){
-    //         sql += ` WHERE ${wheres.join(' AND ')}`
-    //       }
-    //     }
-    //     sql += ' LIMIT ? OFFSET ?'
-    //     filterPage += filterPageArray.join('')
-    //     db.query(sql, [...values, limit, offset], (err, data) => {
-    //         if (err) {
-    //             console.error(err);
-    //         }
-    //         console.log(page, pages)
-    //         console.log(parseInt(page) === pages)
-    //         res.render('todos', { rows: data, pages, page, filter, filterPage })
-    //     })
-    // })
-
-    db.query(sql, (err, data) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log(data.rows);
-      res.render('todos', { rows: data.rows, pages, page, filter, filterPage })
+    db.query(sql, values, (err, data) => {
+        if (err) {
+            console.error(err);
+        }
+        // console.log(data)
+        const pages = Math.ceil(data.rows[0].total / limit)
+        sql = 'SELECT * FROM todos'
+        if (wheres.length > 0) {
+          if (req.query.operation == 'OR'){
+            sql += ` WHERE ${wheres.join(' OR ')}`
+          } else if (req.query.operation == 'AND'){
+            sql += ` WHERE ${wheres.join(' AND ')}`
+          }
+        }
+        sql += ` LIMIT $${count++} OFFSET $${count++}`
+        filterPage += filterPageArray.join('')
+        console.log(sql)
+        db.query(sql, [...values, limit, offset], (err, data) => {
+            if (err) {
+                console.error(err);
+            }
+            // console.log(page, pages)
+            // console.log(parseInt(page) === pages)
+            res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email })
+        })
     })
+
+    console.log(sql)
+
+    // db.query(sql, (err, data) => {
+    //   if (err) {
+    //     console.error(err);
+    //   }
+    //   const pages = Math.ceil(data[0].total / limit)
+    //   console.log(data.rows);
+    //   res.render('todos', { rows: data.rows, pages, page, filter, filterPage })
+    // })
 
   });
 
@@ -142,12 +150,12 @@ module.exports = function (db) {
   })
 
   router.post('/add', (req, res) => {
-    add(req.body.name, parseInt(req.body.height), parseFloat(req.body.weight), req.body.birthdate, req.body.married, (err) => {
+    add(req.body.title, req.session.user.id, (err) => {
       if (err) {
         console.error(err);
       }
     })
-    res.redirect('/');
+    res.redirect('/todos');
   })
 
   router.get('/edit/:id', helpers.isLoggedIn, (req, res) => {

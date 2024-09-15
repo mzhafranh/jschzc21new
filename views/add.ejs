@@ -28,7 +28,7 @@
             <div class="card-footer">
                 <div class="row">
                     <button type="submit" class="btn btn-primary btn-sm" style="width: 36px; margin-right: 5px; margin-left: 10px;"><i class="fa-solid fa-floppy-disk"></i></button>
-                    <a href="/" class="btn btn-warning btn-sm" style="width: 36px;"><i class="fa-solid fa-rotate-left"></i></a>
+                    <a href="/todos/add" class="btn btn-warning btn-sm" style="width: 36px;"><i class="fa-solid fa-rotate-left"></i></a>
                 </div>
             </div>
             </form>
@@ -36,15 +36,6 @@
         </div>
     </div>
     <br>
-    <script src="/javascripts/bootstrap.js"></script>
-    <script>
-        function userConfirm(name, index) {
-            const userConfirmed = confirm(`Apakah yakin akan menghapus data ${name}?`);
-            if (userConfirmed) {
-                window.location.href = `/delete/${index}`
-            }
-        }
-    </script>
 </body>
 
 </html>

@@ -17,11 +17,11 @@
                             style="border: 2px solid #D2D2D2" width="42px" height="42px">
                     </div>
                     <div class="col">
-                        <h2>user@gmail.com</h2>
+                        <h2><%= email %></h2>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i> sign
-                            out</button>
+                        <a href="/logout" class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i> sign
+                            out</a>
                     </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                     <div class="row mt-3" style="margin-left: 0px;">
                         <button type="submit" class="btn btn-info btn-sm" style="width: 36px; margin-right: 5px;"><i
                                 class="fa-solid fa-magnifying-glass"></i></button>
-                        <a href="/" class="btn btn-warning btn-sm" style="width: 36px;"><i
+                        <a href="/todos" class="btn btn-warning btn-sm" style="width: 36px;"><i
                                 class="fa-solid fa-arrows-rotate"></i></a>
                     </div>
                 </form>
@@ -145,7 +145,7 @@
             <div class="card-footer">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="col-auto">
-                    <a href="/add" class="btn btn-primary btn-sm" style="width: 30px; height: 30px;">
+                    <a href="/todos/add" class="btn btn-primary btn-sm" style="width: 30px; height: 30px;">
                       <i class="fa-solid fa-plus"></i>
                     </a>
                   </div>
