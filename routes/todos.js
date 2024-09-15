@@ -89,16 +89,16 @@ module.exports = function (db) {
       filterPageArray.push(`&operation=OR`)
     }
 
-    let sql = 'SELECT COUNT(*) AS total FROM todos';
+    let sql = `SELECT COUNT(*) AS total FROM todos JOIN users ON todos.userid = users.id WHERE todos.userid = ${req.session.user.id}`;
     if (wheres.length > 0) {
       if (req.query.operation == 'OR'){
-        sql += ` WHERE ${wheres.join(' OR ')}`
+        sql += ` AND ${wheres.join(' OR ')}`
       } else if (req.query.operation == 'AND'){
-        sql += ` WHERE ${wheres.join(' AND ')}`
+        sql += ` AND ${wheres.join(' AND ')}`
       }
     }
 
-    // console.log(sql)
+    console.log(sql)
     // console.log(values)
     // console.log(wheres)
 
@@ -108,12 +108,12 @@ module.exports = function (db) {
         }
         // console.log(data)
         const pages = Math.ceil(data.rows[0].total / limit)
-        sql = 'SELECT * FROM todos'
+        sql = `SELECT * FROM todos JOIN users ON todos.userid = users.id WHERE todos.userid = ${req.session.user.id}`
         if (wheres.length > 0) {
           if (req.query.operation == 'OR'){
-            sql += ` WHERE ${wheres.join(' OR ')}`
+            sql += ` AND ${wheres.join(' OR ')}`
           } else if (req.query.operation == 'AND'){
-            sql += ` WHERE ${wheres.join(' AND ')}`
+            sql += ` AND ${wheres.join(' AND ')}`
           }
         }
         sql += ` LIMIT $${count++} OFFSET $${count++}`
