@@ -149,7 +149,7 @@ module.exports = function (db) {
     res.render('add')
   })
 
-  router.post('/add', (req, res) => {
+  router.post('/add', helpers.isLoggedIn, (req, res) => {
     add(req.body.title, req.session.user.id, (err) => {
       if (err) {
         console.error(err);
@@ -168,7 +168,7 @@ module.exports = function (db) {
     })
   })
 
-  router.post('/edit/:id', (req, res) => {
+  router.post('/edit/:id', helpers.isLoggedIn, (req, res) => {
     update(req.body.title, req.body.complete, req.body.deadline, req.session.user.id, req.params.id, (err) => {
       if (err) {
         console.error(err)
