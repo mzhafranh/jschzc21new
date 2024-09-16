@@ -13,8 +13,15 @@
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <img src="/images/smol.png" alt="avatar" class="rounded-circle"
-                            style="border: 2px solid #D2D2D2" width="42px" height="42px">
+                        <a href="/users/avatar">
+                            <% if (!avatar) { %>
+                                <img src="/images/default_avatar.jpg" alt="avatar" class="rounded-circle"
+                                style="border: 2px solid #D2D2D2" width="42px" height="42px">
+                            <% } else { %>
+                                <img src="/images/uploads/<%= avatar %>" alt="avatar" class="rounded-circle"
+                                style="border: 2px solid #D2D2D2" width="42px" height="42px">
+                            <% } %>
+                        </a>
                     </div>
                     <div class="col">
                         <h2><%= email %></h2>

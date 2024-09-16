@@ -31,6 +31,12 @@ module.exports = function (db) {
     })
   }
 
+  function getAvatar(userid, callback){
+    db.query(`SELECT avatar FROM users WHERE id = ${userid}`, [], (err, data) => {
+      callback(err, data);
+    })
+  }
+
   /* GET home page. */
   router.get('/', helpers.isLoggedIn, async function (req, res, next) {
     const page = req.query.page || 1;
@@ -123,10 +129,13 @@ module.exports = function (db) {
             if (err) {
                 console.error(err);
             }
-            // console.log(page, pages)
-            // console.log(parseInt(page) === pages)
-            console.log(data.rows)
-            res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email })
+          
+            getAvatar(req.session.user.id, (err, avatarData) => {
+              if (err) {
+                console.error(err)
+              }
+              res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email, avatar: avatarData.rows[0].avatar})
+            })
         })
     })
 
