@@ -123,7 +123,7 @@
                             </td>
                             <td>
                                 <% 
-                                    const date = new Date(item.deadline); 
+                                    const date = new Date(item.deadline);
                                     const day = date.getDate();
                                     const month = date.toLocaleString('default', { month: 'short' });
                                     const year = date.getFullYear();
@@ -134,7 +134,7 @@
                                 <%= formattedDate %>
                             </td>
                             <td>
-                                <a href="/edit/<%= item.id %>" class="btn btn-success btn-sm" style="width: 36px;"><i
+                                <a href="/todos/edit/<%= item.id %>" class="btn btn-success btn-sm" style="width: 36px;"><i
                                         class="fa-solid fa-pen"></i></a>
                                 <!-- <button onclick="userConfirm('<%= item.name %>',<%= index %>)"
                    class="btn btn-danger btn-sm">Delete</button> -->

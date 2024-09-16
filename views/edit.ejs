@@ -11,7 +11,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Adding Data</h2>
+                <h2 class="text-center">Updating Data</h2>
             </div>
             <div class="card-body" style="padding-left: 0; padding-right: 0;">
 
@@ -21,7 +21,7 @@
                             <label for="title" class="col-form-label">Title</label>
                         </div>
                         <div class="col-10">
-                            <input type="text" name="title" class="form-control" placeholder="insert your title">
+                            <input type="text" name="title" class="form-control" placeholder="insert your title" value="<%= item.title %>">
                         </div>
                     </div>
 
@@ -30,7 +30,16 @@
                             <label for="deadline" class="col-form-label">Deadline</label>
                         </div>
                         <div class="col-10">
-                            <input type="date" name="deadline" class="form-control">
+                            <% 
+                                const date = new Date(item.deadline); 
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed in JavaScript
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+                            %>
+                            <input type="datetime-local" name="deadline" class="form-control" value="<%= formattedDate %>">
                         </div>
                     </div>
 
@@ -38,8 +47,9 @@
                         <div class="col-2">
                             <label for="complete" class="col-form-label">Complete</label>
                         </div>
-                        <div class="col-10">
-                            <input type="checkbox" name="complete" class="form-control">
+                        <div class="col-auto">
+                            <input type="checkbox" class="form-check-input" name="complete" class="form-control" <%= item.complete ? 'checked' : ''%> value="1">
+                            <label class="form-check-label" for="complete">done</label>
                         </div>
                     </div>
             </div>
@@ -48,7 +58,7 @@
                     <button type="submit" class="btn btn-primary btn-sm"
                         style="width: 36px; margin-right: 5px; margin-left: 10px;"><i
                             class="fa-solid fa-floppy-disk"></i></button>
-                    <a href="/" class="btn btn-warning btn-sm" style="width: 36px;"><i
+                    <a href="/todos" class="btn btn-warning btn-sm" style="width: 36px;"><i
                             class="fa-solid fa-rotate-left"></i></a>
                 </div>
             </div>
@@ -57,15 +67,6 @@
         </div>
     </div>
     <br>
-    <script src="/javascripts/bootstrap.js"></script>
-    <script>
-        function userConfirm(name, index) {
-            const userConfirmed = confirm(`Apakah yakin akan menghapus data ${name}?`);
-            if (userConfirmed) {
-                window.location.href = `/delete/${index}`
-            }
-        }
-    </script>
 </body>
 
 </html>

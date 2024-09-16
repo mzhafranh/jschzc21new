@@ -12,15 +12,15 @@ module.exports = function (db) {
     });
   }
 
-  function select(id, callback) {
-    db.query('SELECT * FROM todos WHERE id = $1', [id], (err, data) => {
+  function select(userid, id, callback) {
+    db.query(`SELECT * FROM todos WHERE userid = $1 AND id = $2`, [userid, id], (err, data) => {
       // console.log(data)
       callback(err, data);
     })
   }
 
   function update(title, complete, deadline, userid, id, callback) {
-    db.query('UPDATE todos SET title_column = $1, complete_column = $2, deadline_column = $3, userid_column = $4 WHERE id = $5', [title, complete, deadline, userid, id], (err) => {
+    db.query('UPDATE todos SET title = $1, complete = $2, deadline = $3, userid = $4 WHERE id = $5', [title, complete, deadline, userid, id], (err) => {
       callback(err);
     });
   }
@@ -89,7 +89,7 @@ module.exports = function (db) {
       filterPageArray.push(`&operation=OR`)
     }
 
-    let sql = `SELECT COUNT(*) AS total FROM todos JOIN users ON todos.userid = users.id WHERE todos.userid = ${req.session.user.id}`;
+    let sql = `SELECT COUNT(*) AS total FROM todos WHERE userid = ${req.session.user.id}`;
     if (wheres.length > 0) {
       if (req.query.operation == 'OR'){
         sql += ` AND ${wheres.join(' OR ')}`
@@ -108,7 +108,7 @@ module.exports = function (db) {
         }
         // console.log(data)
         const pages = Math.ceil(data.rows[0].total / limit)
-        sql = `SELECT * FROM todos JOIN users ON todos.userid = users.id WHERE todos.userid = ${req.session.user.id}`
+        sql = `SELECT * FROM todos WHERE userid = ${req.session.user.id}`
         if (wheres.length > 0) {
           if (req.query.operation == 'OR'){
             sql += ` AND ${wheres.join(' OR ')}`
@@ -125,20 +125,12 @@ module.exports = function (db) {
             }
             // console.log(page, pages)
             // console.log(parseInt(page) === pages)
+            console.log(data.rows)
             res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email })
         })
     })
 
     console.log(sql)
-
-    // db.query(sql, (err, data) => {
-    //   if (err) {
-    //     console.error(err);
-    //   }
-    //   const pages = Math.ceil(data[0].total / limit)
-    //   console.log(data.rows);
-    //   res.render('todos', { rows: data.rows, pages, page, filter, filterPage })
-    // })
 
   });
 
@@ -156,21 +148,21 @@ module.exports = function (db) {
   })
 
   router.get('/edit/:id', helpers.isLoggedIn, (req, res) => {
-    select(parseInt(req.params.id), (err, data) => {
+    select(req.session.user.id, req.params.id, (err, data) => {
       if (err) {
         console.error(err);
       }
-      // console.log(data[0])
-      res.render('edit', { item: data[0] })
+      // console.log(data.rows[0])
+      res.render('edit', { item: data.rows[0] })
     })
   })
 
   router.post('/edit/:id', (req, res) => {
-    update(parseInt(req.params.id), req.body.name, parseInt(req.body.height), parseFloat(req.body.weight), req.body.birthdate, req.body.married, (err) => {
+    update(req.body.title, req.body.complete, req.body.deadline, req.session.user.id, req.params.id, (err) => {
       if (err) {
         console.error(err)
       }
-      res.redirect('/');
+      res.redirect('/todos');
     })
   })
 
