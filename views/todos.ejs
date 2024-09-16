@@ -159,19 +159,19 @@
                                     const formattedDate=`${day} ${month} ${year} ${hours}:${minutes}`; 
                                     const passedDeadline = date < now && !item.complete;
                                 %>
-                                <td <%= passedDeadline? 'class=bg-danger' : '' %>>
+                                <td <%= passedDeadline? 'class=bg-danger' : '' %> <%= item.complete ? 'class=bg-success' : '' %>>
                                     <%= (page - 1) * 5 + index + 1 %>
                                 </td>
-                                <td <%= passedDeadline? 'class=bg-danger' : '' %>>
+                                <td <%= passedDeadline? 'class=bg-danger' : '' %> <%= item.complete ? 'class=bg-success'  : '' %>>
                                     <%= item.title %>
                                 </td>
-                                <td <%= passedDeadline? 'class=bg-danger' : '' %>>
-                                    <%= item.complete ? 'Yes' : 'Not yet' %>
+                                <td <%= passedDeadline? 'class=bg-danger' : '' %> <%= item.complete ? 'class=bg-success'  : '' %>>
+                                    <%= item.complete ? 'Done' : 'Not yet' %>
                                 </td>
-                                <td <%= passedDeadline? 'class=bg-danger' : '' %>>
+                                <td <%= passedDeadline? 'class=bg-danger' : '' %> <%= item.complete ? 'class=bg-success'  : '' %>>
                                     <%= formattedDate %>
                                 </td>
-                                <td <%= passedDeadline? 'class=bg-danger' : '' %>>
+                                <td <%= passedDeadline? 'class=bg-danger' : '' %> <%= item.complete ? 'class=bg-success'  : '' %>>
                                     <a href="/todos/edit/<%= item.id %>" class="btn btn-success btn-sm"
                                         style="width: 36px;"><i class="fa-solid fa-pen"></i></a>
                                     <!-- <button onclick="userConfirm('<%= item.name %>',<%= index %>)"
@@ -281,7 +281,7 @@
     </script>
     <script>
         function sortData(sortBy, order){
-            const filterPage = '<%= filterPage %>'
+            const filterPage = '<%- filterPage %>'
             window.location.href = `/todos?page=1${filterPage}&sortBy=${sortBy}&order=${order}`
         }
     </script>
