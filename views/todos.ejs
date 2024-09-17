@@ -115,25 +115,25 @@
                             <th scope="col">No.</th>
 
                             <% if (sortBy == 'title' && order == 'asc') { %>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("title", "desc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Title</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("title", "desc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Title</button></th>
                             <% } else if (sortBy == 'title' && order == 'desc') {%>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("title", "asc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Title</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("title", "asc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Title</button></th>
                             <%} else {%>
                                 <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("title", "asc")'><i class="fa-solid fa-sort" style="margin-left:10px;"></i> Title</button></th>
                             <% } %>
 
                             <% if (sortBy == 'complete' && order == 'asc') { %>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("complete", "desc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Complete</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("complete", "desc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Complete</button></th>
                             <% } else if (sortBy == 'complete' && order == 'desc') {%>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("complete", "asc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Complete</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("complete", "asc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Complete</button></th>
                             <%} else {%>
                                 <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("complete", "asc")'><i class="fa-solid fa-sort" style="margin-left:10px;"></i> Complete</button></th>
                             <% } %>
 
                             <% if (sortBy == 'deadline' && order == 'asc') { %>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("deadline", "desc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Deadline</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("deadline", "desc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Deadline</button></th>
                             <% } else if (sortBy == 'deadline' && order == 'desc') {%>
-                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("deadline", "asc")'><i class="fa-solid fa-sort-up" style="margin-left:10px;"></i> Deadline</button></th>
+                                <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("deadline", "asc")'><i class="fa-solid fa-sort-down" style="margin-left:10px;"></i> Deadline</button></th>
                             <%} else {%>
                                 <th scope="col" style="padding-left: 0;"><button class="btn" style="font-weight: bold; padding: 0 0 0 0;" onclick='sortData("deadline", "asc")'><i class="fa-solid fa-sort" style="margin-left:10px;"></i> Deadline</button></th>
                             <% } %>

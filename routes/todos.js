@@ -31,7 +31,7 @@ module.exports = function (db) {
     })
   }
 
-  function getAvatar(userid, callback){
+  function getAvatar(userid, callback) {
     db.query(`SELECT avatar FROM users WHERE id = ${userid}`, [], (err, data) => {
       callback(err, data);
     })
@@ -50,7 +50,8 @@ module.exports = function (db) {
     var sortBy = req.query.sortBy == undefined ? `id` : req.query.sortBy;
     var order = req.query.order == undefined ? `asc` : req.query.order;
     // const filterPage = `&name=${req.query.name}&height=${req.query.height}&weight=${req.query.weight}&startDate=${req.query.startDate}&endDate=${req.query.endDate}&married=${req.query.married}&operation=${req.query.operation}`
-    const filter = {title: req.query.title,
+    const filter = {
+      title: req.query.title,
       complete: req.query.complete,
       startDate: req.query.startDate,
       endDate: req.query.endDate,
@@ -58,51 +59,67 @@ module.exports = function (db) {
     }
 
     if (req.query.title) {
-        wheres.push(`title ilike '%' || $${count++} || '%'`);
-        values.push(req.query.title);
-        filterPageArray.push(`&title=${req.query.title}`)
+      wheres.push(`title ilike '%' || $${count++} || '%'`);
+      values.push(req.query.title);
+      filterPageArray.push(`&title=${req.query.title}`)
     }
 
     if (req.query.complete) {
-        wheres.push(`complete = $${count++}`);
-        values.push(req.query.complete);
-        filterPageArray.push(`&complete=${req.query.complete}`)
+      wheres.push(`complete = $${count++}`);
+      values.push(req.query.complete);
+      filterPageArray.push(`&complete=${req.query.complete}`)
     }
 
-    if (req.query.startDate || req.query.endDate ) {
-        if (req.query.startDate && req.query.endDate) {
-            wheres.push(`deadline BETWEEN $${count++} AND $${count++}`)
-            values.push(req.query.startDate);
-            values.push(req.query.endDate);
-            filterPageArray.push(`&startDate=${req.query.startDate}`)
-            filterPageArray.push(`&endDate=${req.query.endDate}`)
-        }
-        else if (req.query.startDate) {
-            wheres.push(`deadline >= $${count++}`)
-            values.push(req.query.startDate);
-            filterPageArray.push(`&startDate=${req.query.startDate}`)
-        }
-        else if (req.query.endDate) {
-            wheres.push(`deadline <= $${count++}`)
-            values.push(req.query.endDate);
-            filterPageArray.push(`&endDate=${req.query.endDate}`)
-        }
+    if (req.query.startDate || req.query.endDate) {
+      if (req.query.startDate && req.query.endDate) {
+
+        let endDate = new Date(req.query.endDate)
+        endDate.setDate(endDate.getDate() + 1)
+        let year = endDate.getFullYear();
+        let month = String(endDate.getMonth() + 1).padStart(2, '0');
+        let day = String(endDate.getDate()).padStart(2, '0');
+        let formattedEndDate = `${year}-${month}-${day}`
+
+        wheres.push(`deadline BETWEEN $${count++} AND $${count++}`)
+        values.push(req.query.startDate);
+        values.push(endDate);
+        filterPageArray.push(`&startDate=${req.query.startDate}`)
+        filterPageArray.push(`&endDate=${formattedEndDate}`)
+      }
+      else if (req.query.startDate) {
+        wheres.push(`deadline >= $${count++}`)
+        values.push(req.query.startDate);
+        filterPageArray.push(`&startDate=${req.query.startDate}`)
+      }
+      else if (req.query.endDate) {
+
+        let endDate = new Date(req.query.endDate)
+        endDate.setDate(endDate.getDate() + 1)
+        let year = endDate.getFullYear();
+        let month = String(endDate.getMonth() + 1).padStart(2, '0');
+        let day = String(endDate.getDate()).padStart(2, '0');
+        let formattedEndDate = `${year}-${month}-${day}`
+
+        wheres.push(`deadline <= $${count++}`)
+        values.push(endDate);
+        filterPageArray.push(`&endDate=${formattedEndDate}`)
+      }
     }
 
 
-    if (req.query.operation){
+    if (req.query.operation) {
       filterPageArray.push(`&operation=${req.query.operation}`)
     }
     else {
       filterPageArray.push(`&operation=OR`)
     }
 
-    let sql = `SELECT COUNT(*) AS total FROM todos WHERE userid = ${req.session.user.id}`;
+    let sql = `SELECT COUNT(*) AS total FROM todos WHERE (userid = ${req.session.user.id})`;
     if (wheres.length > 0) {
-      if (req.query.operation == 'OR'){
-        sql += ` AND ${wheres.join(' OR ')}`
-      } else if (req.query.operation == 'AND'){
-        sql += ` AND ${wheres.join(' AND ')}`
+      if (req.query.operation == 'OR') {
+        sql += ` AND (${wheres.join(' OR ')})`
+      } else if (req.query.operation == 'AND') {
+        sql += ` AND (${wheres.join(' AND ')})`
       }
     }
 
@@ -111,34 +128,34 @@ module.exports = function (db) {
     // console.log(wheres)
 
     db.query(sql, values, (err, data) => {
+      if (err) {
+        console.error(err);
+      }
+      // console.log(data)
+      const pages = Math.ceil(data.rows[0].total / limit)
+      sql = `SELECT * FROM todos WHERE (userid = ${req.session.user.id})`
+      if (wheres.length > 0) {
+        if (req.query.operation == 'OR') {
+          sql += ` AND (${wheres.join(' OR ')})`
+        } else if (req.query.operation == 'AND') {
+          sql += ` AND (${wheres.join(' AND ')})`
+        }
+      }
+      sql += ` ORDER BY ${sortBy} ${order} LIMIT $${count++} OFFSET $${count++}`
+      filterPage += filterPageArray.join('')
+      console.log(sql)
+      db.query(sql, [...values, limit, offset], (err, data) => {
         if (err) {
-            console.error(err);
+          console.error(err);
         }
-        // console.log(data)
-        const pages = Math.ceil(data.rows[0].total / limit)
-        sql = `SELECT * FROM todos WHERE userid = ${req.session.user.id}`
-        if (wheres.length > 0) {
-          if (req.query.operation == 'OR'){
-            sql += ` AND ${wheres.join(' OR ')}`
-          } else if (req.query.operation == 'AND'){
-            sql += ` AND ${wheres.join(' AND ')}`
+
+        getAvatar(req.session.user.id, (err, avatarData) => {
+          if (err) {
+            console.error(err)
           }
-        }
-        sql += ` ORDER BY ${sortBy} ${order} LIMIT $${count++} OFFSET $${count++}`
-        filterPage += filterPageArray.join('')
-        console.log(sql)
-        db.query(sql, [...values, limit, offset], (err, data) => {
-            if (err) {
-                console.error(err);
-            }
-          
-            getAvatar(req.session.user.id, (err, avatarData) => {
-              if (err) {
-                console.error(err)
-              }
-              res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email, avatar: avatarData.rows[0].avatar, sortBy, order})
-            })
+          res.render('todos', { rows: data.rows, pages, page, filter, filterPage, email: req.session.user.email, avatar: avatarData.rows[0].avatar, sortBy, order })
         })
+      })
     })
 
     console.log(sql)
@@ -180,9 +197,9 @@ module.exports = function (db) {
   router.get('/delete/:id', helpers.isLoggedIn, (req, res) => {
     const index = parseInt(req.params.id)
     remove(index, (err) => {
-        if (err) {
-            console.error(err);
-        }
+      if (err) {
+        console.error(err);
+      }
     })
     res.redirect('/todos');
   })

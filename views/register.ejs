@@ -16,7 +16,7 @@
   <div class="container mt-5 d-flex justify-content-center">
     <div class="text-center">
       <img src="/images/logo.png" class="img-fluid" alt="logo" style="height: 96px;">
-      <h3>Please sign in</h3>
+      <h3>Please sign up</h3>
       <form action="" method="post">
         <div class="card mt-3">
           <ul class="list-group list-group-flush">
@@ -35,6 +35,16 @@
       </form>
       <p>have a account? please <a href="/">sign in</a></p>
       <br>
+      <% if(info.length > 0) {%>
+        <div class="alert alert-danger mt-3" role="alert">
+          <%= info %>
+        </div>
+        <% } %>
+      <% if(success.length > 0) {%>
+        <div class="alert alert-success mt-3" role="alert">
+          <%= success %>
+        </div>
+      <% } %>
       <p style="color: #6c757d;">©️ 2017-2023</p>
     </div>
   </div>

@@ -47,26 +47,36 @@ module.exports = function (db) {
   });
 
   router.get('/register', function (req, res, next) {
-    res.render('register');
+    res.render('register', { info: req.flash('info'), success: req.flash('success')})
   });
 
   router.post('/register', function (req, res, next) {
     const { email, password, repassword } = req.body
-    if (password != repassword) {
-      return res.send("Password dan repassword berbeda")
-    }
-    db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
-      if (err) return res.send(err)
-      if (data.rows.length > 0) return res.send("Email sudah terdaftar")
-      bcrypt.hash(password, saltRounds, function (err, hash) {
+    console.log(password.length)
+    console.log(password)
+    if (password.length === 0) {
+      req.flash('info', 'Please Fill Password And Retype Password')
+      return res.redirect('/register');
+    } else if (password != repassword) {
+      req.flash('info', 'Password And Retype Password Is Different')
+      return res.redirect('/register');
+    } else {
+      db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
         if (err) return res.send(err)
-        db.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hash], (err) => {
+        if (data.rows.length > 0) {
+          req.flash('info', 'Email Already Registered')
+          return res.redirect('/register');
+        }
+        bcrypt.hash(password, saltRounds, function (err, hash) {
           if (err) return res.send(err)
-        })
-        req.flash('success', 'successfully registered, please sign in!')
-        res.redirect('/')
-      });
-    })
+          db.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hash], (err) => {
+            if (err) return res.send(err)
+          })
+          req.flash('success', 'Successfully Registered, Please Sign In!')
+          res.redirect('/')
+        });
+      })
+    }
   });
 
   router.get('/logout', helpers.isLoggedIn, function (req, res, next) {
